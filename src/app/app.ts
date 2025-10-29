@@ -3,6 +3,8 @@ import { Item } from './models/Item';
 import { CartService } from './services/cart.service';
 import { BudgetPreview } from './components/budget-preview/budget-preview';
 import { BudgetImageService } from './services/budget-image.service';
+import { items } from './data/catalogo';
+
 
 @Component({
   selector: 'app-root',
@@ -16,23 +18,7 @@ export class App {
   showCart = signal(false);
   @ViewChild('budgetPreview', { static: false }) budgetPreviewEl!: ElementRef;
 
-  items: Item[] = [
-    { code: 'M01', name: 'ABRAZADERA PLANA 1/2"' },
-    { code: 'M02', name: 'ABRAZADERA PLANA 3/4"' },
-    { code: 'M33', name: 'BULON DE 1/2" X 6" INOX' },
-    { code: 'M41', name: 'GRAMPAS CIERRE 3/8" INOX' },
-    { code: 'M49', name: 'CRUCETA CHAPA 25 X 25 X 1.5' },
-    { code: 'M01', name: 'ABRAZADERA PLANA 1/2"' },
-    { code: 'M02', name: 'ABRAZADERA PLANA 3/4"' },
-    { code: 'M33', name: 'BULON DE 1/2" X 6" INOX' },
-    { code: 'M41', name: 'GRAMPAS CIERRE 3/8" INOX' },
-    { code: 'M49', name: 'CRUCETA CHAPA 25 X 25 X 1.5' },
-    { code: 'M01', name: 'ABRAZADERA PLANA 1/2"' },
-    { code: 'M02', name: 'ABRAZADERA PLANA 3/4"' },
-    { code: 'M33', name: 'BULON DE 1/2" X 6" INOX' },
-    { code: 'M41', name: 'GRAMPAS CIERRE 3/8" INOX' },
-    { code: 'M49', name: 'CRUCETA CHAPA 25 X 25 X 1.5' },
-  ];
+  items: Item[] = items;
 
   constructor(public cart: CartService, private budgetImage: BudgetImageService) {}
 
