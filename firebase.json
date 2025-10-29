@@ -1,0 +1,11 @@
+{
+  "hosting": {
+    "site": "catalogo-testa-hermanos",
+    "public": "dist/catelog-testa/browser",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
