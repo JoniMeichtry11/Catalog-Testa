@@ -80,7 +80,7 @@
   <!-- Listado -->
   <main class="px-4 pb-28">
     <div class="mt-4 grid grid-cols-1 gap-4">
-      @for (item of filtered(); track item.code) {
+      @for (item of filtered(); track i; let i = $index;) {
         <div
           class="th-card group px-4 py-4 rounded-xl border border-th-metal-dark hover:border-th-orange-primary hover:shadow-lg transition-all duration-300 animate-[thSlideUp_320ms_ease-out_forwards]"
         >
@@ -183,7 +183,7 @@
           <p class="text-th-metal-mid">Tu carrito está vacío.</p>
         } @else {
           <div class="space-y-3">
-            @for (ci of cart.cart(); track ci.code) {
+            @for (ci of cart.cart(); track i; let i = $index;) {
               <div class="flex items-center justify-between th-card px-3 py-2">
                 <span>{{ ci.code }} - {{ ci.name }}</span>
                 <div class="flex items-center gap-2">
@@ -195,18 +195,23 @@
             }
           </div>
 
-          <div class="mt-4 flex justify-between items-center">
+          <div class="mt-4 flex justify-between items-center gap-2">
             <button (click)="cart.clear()" class="text-sm text-th-metal-mid hover:text-th-orange-primary">Vaciar</button>
-            <a
-              [href]="cart.whatsappLink('541112345678')"
-              target="_blank"
+
+            <!-- Botón nuevo: compartir presupuesto -->
+            <button
+              (click)="shareBudget()"
               class="px-4 py-2 rounded-lg bg-th-orange-dark text-white hover:bg-th-orange-primary transition th-glow"
             >
-              Enviar por WhatsApp
-            </a>
+              Compartir presupuesto
+            </button>
           </div>
         }
       </div>
     </div>
   }
+</div>
+
+<div #budgetPreview class="absolute -left-[9999px] top-0">
+  <app-budget-preview [items]="cart.cart()"></app-budget-preview>
 </div>

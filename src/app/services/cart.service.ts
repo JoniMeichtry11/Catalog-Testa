@@ -11,6 +11,8 @@ export class CartService {
     this._cart().reduce((sum, i) => sum + i.qty, 0)
   );
 
+  items = this._cart.asReadonly();
+
   add(item: Item) {
     this._cart.update(c => {
       const existing = c.find(ci => ci.code === item.code);

@@ -1,10 +1,12 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, ElementRef, signal, ViewChild } from '@angular/core';
 import { Item } from './models/Item';
 import { CartService } from './services/cart.service';
+import { BudgetPreview } from './components/budget-preview/budget-preview';
+import { BudgetImageService } from './services/budget-image.service';
 
 @Component({
   selector: 'app-root',
-  imports: [],
+  imports: [BudgetPreview],
   templateUrl: './app.html',
   styleUrl: './app.scss',
   standalone: true,
@@ -12,6 +14,7 @@ import { CartService } from './services/cart.service';
 export class App {
   query = signal('');
   showCart = signal(false);
+  @ViewChild('budgetPreview', { static: false }) budgetPreviewEl!: ElementRef;
 
   items: Item[] = [
     { code: 'M01', name: 'ABRAZADERA PLANA 1/2"' },
@@ -31,7 +34,7 @@ export class App {
     { code: 'M49', name: 'CRUCETA CHAPA 25 X 25 X 1.5' },
   ];
 
-  constructor(public cart: CartService) {}
+  constructor(public cart: CartService, private budgetImage: BudgetImageService) {}
 
   filtered = computed(() => {
     const q = this.query().trim().toLowerCase();
@@ -52,4 +55,26 @@ export class App {
     return found ? found.qty : 0;
   }
 
+  async shareBudget() {
+    if (!this.budgetPreviewEl) return;
+
+    try {
+      const blob = await this.budgetImage.generateImage(
+        this.budgetPreviewEl.nativeElement
+      );
+      const file = new File([blob], 'presupuesto.png', { type: 'image/png' });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: 'Pedido',
+          text: '' // podés dejarlo vacío
+        });
+      } else {
+        alert('La opción de compartir no está soportada en este dispositivo/navegador.');
+      }
+    } catch (err) {
+      console.error('Error al compartir presupuesto', err);
+    }
+  }
 }
