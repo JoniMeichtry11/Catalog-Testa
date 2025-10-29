@@ -1,16 +1,212 @@
-<div
-  class="min-h-screen flex flex-col items-center justify-center bg-th-bg-dark text-th-metal-light"
->
-  <h1 class="text-5xl font-bold text-th-orange-primary">¡Hola mundo!</h1>
-  <p class="mt-4 text-th-metal-mid">Angular 20 + Tailwind 3 + SCSS</p>
-  <button
-    class="mt-6 px-6 py-3 rounded-lg text-white bg-th-orange-dark hover:bg-th-orange-primary transition"
-  >
-    Acción
-  </button>
-  <div
-    class="mt-8 w-64 h-24 rounded-lg bg-th-gradient-fire flex items-center justify-center text-white font-semibold"
-  >
-    Gradiente Fire
+<div class="min-h-screen bg-th-bg-dark text-th-metal-light flex flex-col">
+  <!-- Header con logo animado + search -->
+  <header class="th-header px-4 pt-6 pb-4 flex flex-col items-center gap-4 sticky top-0 z-20">
+    <div
+      class="search-bar rounded-xl th-card flex items-center gap-2 px-3 py-2 w-full max-w-md transition-all duration-300 focus-within:border-th-orange-primary focus-within:shadow-[0_0_12px_var(--th-accent-glow)]"
+    >
+      <!-- Icono -->
+      <svg
+        class="search-icon flex-shrink-0"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1110.5 3a7.5 7.5 0 016.15 13.65z"
+        />
+      </svg>
+
+      <!-- Input -->
+      <input
+        type="text"
+        placeholder="Buscar por código o nombre…"
+        class="search-input"
+        [value]="query()"
+        (input)="setQuery($any($event.target).value)"
+      />
+
+      <!-- Botón limpiar -->
+      @if (query()) {
+        <button
+          class="text-th-metal-mid hover:text-th-orange-primary transition flex items-center justify-center w-6 h-6 rounded-full hover:bg-th-metal-dark"
+          (click)="setQuery('')"
+          aria-label="Limpiar búsqueda"
+        >
+          ✕
+        </button>
+      }
+    </div>
+  </header>
+
+  <div class="flex flex-col items-center pt-6">
+    <!-- Logo animado -->
+  <div class="relative pb-4">
+    <div
+      class="size-28 rounded-xl bg-gradient-to-br from-[#1f1f1f] to-[#2a2a2a] border border-th-metal-dark shadow-lg animate-float flex items-center justify-center overflow-hidden"
+    >
+      <img
+        src="/testa-hermanos-logo.png"
+        alt="Logo Testa Hermanos"
+        class="h-full w-full object-contain p-2"
+        loading="eager"
+      />
+    </div>
+    <!-- Halo sutil -->
+    <span
+      class="pointer-events-none absolute inset-0 -z-10 rounded-xl logo-halo animate-pulse-ring"
+    ></span>
   </div>
+
+    <!-- Texto de marca -->
+    <div class="text-center">
+      <h1 class="text-2xl font-semibold tracking-wide text-th-metal-light">
+        TESTA HERMANOS
+      </h1>
+      <p class="mt-1 text-sm tracking-wide text-th-metal-mid">
+        Desde 1977 forjando calidad
+      </p>
+    </div>
+  </div>
+  <!-- Títulos de sección -->
+  <section class="mt-6 mb-4 text-center">
+    <h2 class="catalog-title">Materiales para electrificación</h2>
+    <h3 class="catalog-subtitle">BAJA - MEDIA - ALTA TENSIÓN</h3>
+  </section>
+
+  <!-- Listado -->
+  <main class="px-4 pb-28">
+    <div class="mt-4 grid grid-cols-1 gap-4">
+      @for (item of filtered(); track item.code) {
+        <div
+          class="th-card group px-4 py-4 rounded-xl border border-th-metal-dark hover:border-th-orange-primary hover:shadow-lg transition-all duration-300 animate-[thSlideUp_320ms_ease-out_forwards]"
+        >
+          <!-- Header del item -->
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-mono text-th-metal-mid tracking-wide">
+              {{ item.code }}
+            </span>
+
+            @if (getQty(item.code) > 0) {
+              <span
+                class="text-xs px-2 py-0.5 rounded-full bg-th-orange-dark text-white"
+              >
+                En carrito: {{ getQty(item.code) }}
+              </span>
+            }
+          </div>
+
+          <!-- Nombre -->
+          <div class="mt-2 text-base font-medium text-th-metal-light">
+            {{ item.name }}
+          </div>
+
+          <!-- Botón -->
+          <button
+            (click)="cart.add(item)"
+            class="mt-4 w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-semibold shadow-sm transition
+            bg-th-orange-dark text-white hover:bg-th-orange-primary"
+          >
+            <svg
+              class="w-4 h-4"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            Añadir al carrito
+          </button>
+        </div>
+      }
+
+      @if (filtered().length === 0) {
+        <div class="text-center text-th-metal-mid mt-6 italic">
+          No se encontraron resultados.
+        </div>
+      }
+    </div>
+  </main>
+
+  <!-- Botón flotante del carrito -->
+  <button
+    class="fixed bottom-4 right-4 rounded-full w-16 h-16 flex items-center justify-center shadow-xl transition animate-bounce-slow bg-gradient-to-br from-th-orange-dark to-th-orange-primary text-white"
+    (click)="showCart.set(true)"
+  >
+    <div class="relative w-full h-full flex items-center justify-center">
+      <!-- Ícono SVG refinado -->
+      <svg
+        class="w-7 h-7"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 256 256"
+        fill="currentColor"
+      >
+        <path
+          d="M215.64941,133.00879l12.15723-66.86231A12.00043,12.00043,0,0,0,216,52H58.01514L53.72852,28.42285A19.99033,19.99033,0,0,0,34.05078,12H16a12,12,0,0,0,0,24H30.71289l26.4707,145.59229A31.98171,31.98171,0,1,0,110.9873,196h42.0254A32.00193,32.00193,0,1,0,184,172H79.833l-2.90918-16H188.10156A27.98561,27.98561,0,0,0,215.64941,133.00879ZM88,204a8,8,0,1,1-8-8A8.00917,8.00917,0,0,1,88,204Zm96,8a8,8,0,1,1,8-8A8.00917,8.00917,0,0,1,184,212ZM62.37891,76H201.62109l-9.585,52.71631A3.99708,3.99708,0,0,1,188.10156,132H72.56055Z"
+        />
+      </svg>
+
+      <!-- Badge -->
+      @if (cart.totalItems() > 0) {
+        <span
+          class="absolute top-1 right-1 bg-red-600 text-xs font-bold rounded-full px-2 py-0.5 shadow-md"
+        >
+          {{ cart.totalItems() }}
+        </span>
+      }
+    </div>
+  </button>
+
+
+
+  <!-- Modal del carrito -->
+  @if (showCart()) {
+    <div class="fixed inset-0 z-40 flex items-end sm:items-center justify-center">
+      <!-- Overlay -->
+      <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" (click)="showCart.set(false)"></div>
+
+      <!-- Sheet -->
+      <div
+        class="th-card w-full sm:w-96 max-h-[80vh] overflow-y-auto p-4 relative z-50 rounded-t-2xl sm:rounded-xl shadow-2xl animate-[thSlideUp_300ms_ease-out]"
+      >
+        <div class="flex justify-between items-center mb-3">
+          <h2 class="text-lg font-semibold text-th-orange-primary">Carrito</h2>
+          <button (click)="showCart.set(false)" class="text-th-metal-mid hover:text-th-orange-primary">✕</button>
+        </div>
+
+        @if (cart.cart().length === 0) {
+          <p class="text-th-metal-mid">Tu carrito está vacío.</p>
+        } @else {
+          <div class="space-y-3">
+            @for (ci of cart.cart(); track ci.code) {
+              <div class="flex items-center justify-between th-card px-3 py-2">
+                <span>{{ ci.code }} - {{ ci.name }}</span>
+                <div class="flex items-center gap-2">
+                  <button (click)="cart.removeOne(ci)" class="px-2 py-1 bg-th-metal-dark rounded text-xs">-</button>
+                  <span class="text-sm">x{{ ci.qty }}</span>
+                  <button (click)="cart.add(ci)" class="px-2 py-1 bg-th-orange-dark text-white rounded text-xs">+</button>
+                </div>
+              </div>
+            }
+          </div>
+
+          <div class="mt-4 flex justify-between items-center">
+            <button (click)="cart.clear()" class="text-sm text-th-metal-mid hover:text-th-orange-primary">Vaciar</button>
+            <a
+              [href]="cart.whatsappLink('541112345678')"
+              target="_blank"
+              class="px-4 py-2 rounded-lg bg-th-orange-dark text-white hover:bg-th-orange-primary transition th-glow"
+            >
+              Enviar por WhatsApp
+            </a>
+          </div>
+        }
+      </div>
+    </div>
+  }
 </div>
