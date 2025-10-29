@@ -1,1 +1,16 @@
-/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --th-orange-primary: #ff6a00;
+  --th-orange-dark: #cc5200;
+  --th-metal-light: #c4c4c4;
+  --th-metal-mid: #8a8a8a;
+  --th-metal-dark: #3a3a3a;
+  --th-bg-dark: #1a1a1a;
+  --th-accent-glow: rgba(255, 106, 0, 0.6);
+
+  --th-gradient-fire: linear-gradient(90deg, #cc5200 0%, #ff6a00 100%);
+  --th-gradient-metal: linear-gradient(180deg, #c4c4c4 0%, #3a3a3a 100%);
+}
